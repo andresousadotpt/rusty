@@ -149,4 +149,227 @@ let months = ["January", "February", "March", "April", "May", "June", "July",
               "August", "September", "October", "November", "December"];
 ```
 
+You can specify the size of the array and the type by:
+```rust
+let a: [i32, 5] = [1, 2, 3, 4, 5];
+```
+<br>
 
+To access is like all languages `a[0]`<br>
+In case you try to access an index that does not exists, it will most likely cause a runtime error.
+
+# Functions
+Rust uses `fn` keyword to declare new functions. <br>
+Rust uses `snake_case` as the conventional style for functions and variable names, with all leter lowercase. <br>
+
+## Parameters
+We can define functions to have parameters. <br>
+We *must* specify the type of the parameters via this way:
+```rust
+fn main() {
+    print_labeled_measurement(5, 'h');
+}
+
+fn print_labeled_measurement(value: i32, unit_label: char) {
+    println!("The measurement is: {value}{unit_label}");
+}
+```
+<br>
+
+## Statements and Expressions
+Function bodies are made up of a series of statements optionally ending in an expression. <br>
+*Statements* are instructions that perform some action and do not return a value. <br>
+*Expressions* evaluate to a resultant value.<br>
+
+When we create a variable and assign a value to it with the `let` keyword is a statement. <br>
+Function definitions are also statements (calling a function is not a statement).
+
+Since statements does not return value we cannot do like this:
+```rust
+fn main() {
+    let x = (let y = 6);
+}
+```
+<br>
+
+The statement `let y = 6;` is an expression that evaluates to the value `6`. <br>
+Calling a function is an expression. Calling a macro is an expression. A new scope block created with `{}` is an expression, for example:
+```rust
+fn main() {
+    let y = {
+        let x = 3;
+        x + 1
+    };
+
+    println!("The value of y is: {y}");
+}
+```
+<br>
+
+This block is an expression:
+```rust
+{
+    let x = 3;
+    x + 1
+}
+```
+<br>
+In this case evaluates to 4.
+
+
+## Functions with return values
+```rust
+fn five() -> i32 {
+    5
+}
+
+fn main() {
+    let x = five();
+
+    println!("The value of x is: {x}");
+}
+```
+
+If we add a `;` to the end of the expression inside the `five()` function, it will give an error. <br>
+It will gives us an error, because the signature of the method `five()` says that it will return a i32, but it returned a statement.
+
+```rust
+fn main() {
+    let x = plus_one(5);
+
+    println!("The value of x is: {x}");
+}
+
+fn plus_one(x: i32) -> i32 {
+    x + 1;
+}
+```
+<br>
+
+This will give a code like:
+```shell
+$ cargo run
+   Compiling functions v0.1.0 (file:///projects/functions)
+error[E0308]: mismatched types
+ --> src/main.rs:7:24
+  |
+7 | fn plus_one(x: i32) -> i32 {
+  |    --------            ^^^ expected `i32`, found `()`
+  |    |
+  |    implicitly returns `()` as its body has no tail or `return` expression
+8 |     x + 1;
+  |          - help: remove this semicolon to return this value
+
+For more information about this error, try `rustc --explain E0308`.
+error: could not compile `functions` (bin "functions") due to 1 previous error
+```
+
+
+
+# Control Flow
+`if` is basically the same (rust just don't use `()`).
+`if` is an expression and because of that we can do:
+```rust
+let condition = true;
+let number = if condition { 5 } else { 6 };
+```
+<br>
+The `if` expression in the above example we cannot have mismatch of types. They should be the same type.
+
+
+## Repetition with Loops
+There is 3 kinds of loops: `loop`, `while`, `for`
+
+### `loop`
+Infinite loop until you explicity tell it to stop. (With for example a `break`)
+```rust
+fn main() {
+    loop {
+        println!("again!");
+    }
+}
+```
+
+
+#### Returning Values from Loops
+```rust
+fn main() {
+    let mut counter = 0;
+
+    let result = loop {
+        counter += 1;
+
+        if counter == 10 {
+            break counter * 2;
+        }
+    };
+
+    println!("The result is {result}");
+}
+```
+
+
+#### Loop labels to Disambiguate Between Multiple Loops
+Loops within loops, `break` and `continue` apply to the innermost loop at that point.<br>
+You can optionally specify a `loop label` that you can then use with `break` or `continue`.<br>
+```rust
+fn main() {
+    let mut count = 0;
+    'counting_up: loop {
+        println!("count = {count}");
+        let mut remaining = 10;
+
+        loop {
+            println!("remaining = {remaining}");
+            if remaining == 9 {
+                break; // this will break the inner loop
+            }
+            if count == 2 {
+                break 'counting_up; // this will break the outer loop
+            }
+            remaining -= 1;
+        }
+
+        count += 1;
+    }
+    println!("End count = {count}");
+}
+```
+
+### `while`
+
+```rust
+fn main() {
+    let mut number = 3;
+
+    while number != 0 {
+        println!("{number}!");
+
+        number -= 1;
+    }
+
+    println!("LIFTOFF!!!");
+}
+```
+
+
+### `for`
+
+```rust
+fn main() {
+    let a = [10, 20, 30, 40, 50];
+
+    for element in a {
+        println!("the value is: {element}");
+    }
+}
+```
+
+```rust
+fn main() {
+    for number in (1..4).rev() {
+        println!("{number}!");
+    }
+    println!("LIFTOFF!!!");
+}
+```
